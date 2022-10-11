@@ -388,6 +388,8 @@ public delegate void ConnectionCallback(bool i_bConnected);
   }
   public Output_SetAxisMapping SetAxisMapping( Direction X, Direction Y, Direction Z)
   {
+
+
     if (IsRetimed)
     {
       return m_RetimingClient.SetAxisMapping(X, Y, Z);
