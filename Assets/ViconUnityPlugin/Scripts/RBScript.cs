@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-
+using UnityEngine.UI;
+// using TMPro;
 using ViconDataStreamSDK.CSharp;
 
 
@@ -18,7 +19,7 @@ namespace UnityVicon
     private Quaternion m_LastGoodRotation;
     private Vector3 m_LastGoodPosition;
     private bool m_bHasCachedPose = false;
-
+    public TextMesh textConn;
     public RBScript()
     {
     }
@@ -40,6 +41,7 @@ namespace UnityVicon
       Output_GetSegmentLocalTranslation OTran = Client.GetSegmentTranslation(ObjectName, SegRootName);
       if (ORot.Result == Result.Success && OTran.Result == Result.Success && !OTran.Occluded )
       {
+        
         // Input data is in Vicon co-ordinate space; z-up, x-forward, rhs.
         // We need it in Unity space, y-up, z-forward lhs
         //           Vicon Unity
@@ -57,11 +59,15 @@ namespace UnityVicon
       }
       else
       {
+        // textConn.text = "nn foii";
         if( m_bHasCachedPose )
         {
           Root.localRotation = m_LastGoodRotation;
           Root.localPosition = m_LastGoodPosition;
         }
+      }
+      if(ORot.Result == Result.Success){
+        textConn.text = "foii";
       }
 
     }
