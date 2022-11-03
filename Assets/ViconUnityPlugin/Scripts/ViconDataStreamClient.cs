@@ -8,6 +8,13 @@ using System.Threading;
 
 using ViconDataStreamSDK.CSharp;
 
+// ===============================================================
+// TESTANDO PRO HOLOLENS
+// ===============================================================
+#if !UNITY_EDITOR
+using System.Threading.Tasks;
+#endif
+
 
 public class ViconDataStreamClient : MonoBehaviour
 {
@@ -43,7 +50,18 @@ public class ViconDataStreamClient : MonoBehaviour
   private static bool bConnected = false;
   private bool bSubjectFilterSet = false;
   private bool bThreadRunning = false;
+
+// ===============================================================
+// TESTANDO PRO HOLOLENS
+// ===============================================================
+#if UNITY_EDITOR
   Thread m_Thread;
+#endif
+
+#if !UNITY_EDITOR
+  // private Windows.Networking.Sockets.StreamSocket socket;
+  Task m_Task;
+#endif
 
   
 public delegate void ConnectionCallback(bool i_bConnected);
@@ -113,8 +131,17 @@ public delegate void ConnectionCallback(bool i_bConnected);
       SetupLog();
     }
 
+// ===============================================================
+// TESTANDO PRO HOLOLENS
+// ===============================================================
+#if UNITY_EDITOR
     m_Thread = new Thread ( ConnectClient );
     m_Thread.Start();
+#endif
+#if !UNITY_EDITOR
+    m_Task = Task.Run(() => ConnectClient());
+#endif
+
   }
 
   void OnValidate()
@@ -124,11 +151,23 @@ public delegate void ConnectionCallback(bool i_bConnected);
       if (bThreadRunning)
       {
         bThreadRunning = false;
+
+// ===============================================================
+// TESTANDO PRO HOLOLENS
+// ===============================================================
+#if UNITY_EDITOR
         m_Thread.Join();
 
         DisConnect();
         m_Thread = new Thread ( ConnectClient );
         m_Thread.Start();
+#endif
+#if !UNITY_EDITOR
+        m_Task.Wait();
+
+        DisConnect();
+        m_Task = Task.Run(() => ConnectClient());
+#endif
       }
     }
   }
@@ -183,7 +222,16 @@ public delegate void ConnectionCallback(bool i_bConnected);
         Output_Connect OC = m_RetimingClient.Connect(CombinedHostnameString);
         print("Connect result: " + OC.Result);
 
+// ===============================================================
+// TESTANDO PRO HOLOLENS
+// ===============================================================
+#if UNITY_EDITOR
         System.Threading.Thread.Sleep(200);
+#endif
+#if !UNITY_EDITOR
+        System.Threading.Tasks.Task.Delay(200).Wait();
+#endif
+
       }
 
       print("Connected using retimed client.");
@@ -219,7 +267,16 @@ public delegate void ConnectionCallback(bool i_bConnected);
       Output_Connect OC = m_Client.Connect(CombinedHostnameString);
       print("Connect result: " + OC.Result);
 
+// ===============================================================
+// TESTANDO PRO HOLOLENS
+// ===============================================================
+#if UNITY_EDITOR
       System.Threading.Thread.Sleep(200);
+#endif
+#if !UNITY_EDITOR
+        System.Threading.Tasks.Task.Delay(200).Wait();
+#endif
+
     }
     
     if( UsePreFetch )
@@ -428,7 +485,18 @@ public uint GetFrameNumber()
     if (bThreadRunning)
     {
       bThreadRunning = false;
+
+// ===============================================================
+// TESTANDO PRO HOLOLENS
+// ===============================================================
+#if UNITY_EDITOR
       m_Thread.Join();
+#endif
+#if !UNITY_EDITOR
+      m_Task.Wait();
+#endif
+
+    
     }
 
   }
