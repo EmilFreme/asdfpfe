@@ -19,6 +19,14 @@ public class socket_client : MonoBehaviour {
     private int data_type;
 	public string verText;
 	public TextMesh verificationText;
+	private float x_trans;
+	private float y_trans;
+	private float z_trans;
+
+	private float x_rot;
+	private float y_rot;
+	private float z_rot;
+	private float a_rot;
 	Transform Root;
 	#endregion  	
 	// Use this for initialization 	
@@ -31,6 +39,9 @@ public class socket_client : MonoBehaviour {
 	void Update () {         
 		Root = transform;
 		verificationText.text = verText;
+		Root.localPosition = new Vector3(-(float)x_trans * 0.001f, (float)y_trans * 0.001f, (float)z_trans * 0.001f);
+		Root.localRotation = new Quaternion((float)x_rot, (float)y_rot, (float)z_rot, (float)a_rot);
+
 		if (Input.GetKeyDown(KeyCode.Space)) {             
 			SendMessage();         
 		}     
@@ -78,10 +89,9 @@ public class socket_client : MonoBehaviour {
 							translation=translation.Remove((translation.Length-1), 1);
 							string[] pos_trans;
 							pos_trans=translation.Split(',');
-							float x_trans = float.Parse(pos_trans[0], CultureInfo.InvariantCulture.NumberFormat);
-							float y_trans= float.Parse(pos_trans[1], CultureInfo.InvariantCulture.NumberFormat);
-							float z_trans = float.Parse(pos_trans[2], CultureInfo.InvariantCulture.NumberFormat);
-							// Root.localPosition = new Vector3(-(float)y_trans * 0.001f, (float)z_trans * 0.001f, (float)x_trans * 0.001f);
+							x_trans = float.Parse(pos_trans[0], CultureInfo.InvariantCulture.NumberFormat);
+							y_trans= float.Parse(pos_trans[1], CultureInfo.InvariantCulture.NumberFormat);
+							z_trans = float.Parse(pos_trans[2], CultureInfo.InvariantCulture.NumberFormat);
                             Debug.Log("Translation x : " + x_trans);
                             Debug.Log("Translation y : " + y_trans); 	
                             Debug.Log("Translation z : " + z_trans); 	
@@ -96,15 +106,14 @@ public class socket_client : MonoBehaviour {
 							//  Debug.Log("Rotation x : " + rotation);
 							string[] pos_rot;
 							pos_rot=rotation.Split(','); 
-							// float x_rot = float.Parse(pos_rot[0], CultureInfo.InvariantCulture.NumberFormat);
-							// float y_rot= float.Parse(pos_rot[1], CultureInfo.InvariantCulture.NumberFormat);
-							// float z_rot = float.Parse(pos_rot[2], CultureInfo.InvariantCulture.NumberFormat);
-							// float a_rot = float.Parse(pos_rot[3], CultureInfo.InvariantCulture.NumberFormat);
-							// // Root.localRotation = new Quaternion((float)y_rot, -(float)z_rot, -(float)x_rot, (float)a_rot);
-                            // Debug.Log("Rotation x : " + x_rot);
-                            // Debug.Log("Rotation y : " + y_rot); 	
-                            // Debug.Log("Rotation z : " + z_rot); 	
- 							// Debug.Log("Rotation a : " + a_rot); 	
+							x_rot = float.Parse(pos_rot[0], CultureInfo.InvariantCulture.NumberFormat);
+							y_rot= float.Parse(pos_rot[1], CultureInfo.InvariantCulture.NumberFormat);
+							z_rot = float.Parse(pos_rot[2], CultureInfo.InvariantCulture.NumberFormat);
+							a_rot = float.Parse(pos_rot[3], CultureInfo.InvariantCulture.NumberFormat);
+                            Debug.Log("Rotation x : " + x_rot);
+                            Debug.Log("Rotation y : " + y_rot); 	
+                            Debug.Log("Rotation z : " + z_rot); 	
+ 							Debug.Log("Rotation a : " + a_rot); 	
                           	
                             data_type=1;
 							Array.Clear(bytes, 0, bytes.Length);

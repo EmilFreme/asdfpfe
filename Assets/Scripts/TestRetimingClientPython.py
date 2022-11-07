@@ -71,16 +71,17 @@ try:
                             # print( segmentName, 'has local translation',len(str(subject_t).encode() ))
                             len_t=str(len(str(subject_t)))
                             # print(len_t)
-
-                            clientSoc.send(len_t.encode())
-                            clientSoc.send(str(subject_t).encode())
-                            
-                            subject_r, segment_r = client.GetSegmentLocalRotationQuaternion( subjectName, segmentName )                         
-                            print( segmentName, 'has local rotation( Quaternion )', len(str(subject_r) )) 
-                            len_r=str(len(str(subject_r)))
-                            # print(len_r)
-                            clientSoc.send(len_r.encode())
-                            clientSoc.send(str(subject_r).encode())
+                            # print(segmentName, "nomee")
+                            if(segmentName == "eugenia"):
+                                clientSoc.send(len_t.encode())
+                                clientSoc.send(str(subject_t).encode())
+                                
+                                subject_r, segment_r = client.GetSegmentLocalRotationQuaternion( subjectName, segmentName )                         
+                                print( segmentName, 'has local rotation( Quaternion )', len(str(subject_r) )) 
+                                len_r=str(len(str(subject_r)))
+                                # print(len_r)
+                                clientSoc.send(len_r.encode())
+                                clientSoc.send(str(subject_r).encode())
                             
                             print( segmentName, 'has local translation',str(subject_r), str(segment_r))
                            
