@@ -220,7 +220,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1263e6ec7ac5ed489db6a5bda42387b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  verification: {fileID: 1161181285}
+  verText: 
+  verificationText: {fileID: 1161181285}
 --- !u!1001 &1161181284
 PrefabInstance:
   m_ObjectHideFlags: 0
