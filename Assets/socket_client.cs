@@ -19,28 +19,58 @@ public class socket_client : MonoBehaviour {
     private int data_type;
 	public string verText;
 	public TextMesh verificationText;
+	// oculos
 	private float x_trans;
 	private float y_trans;
 	private float z_trans;
-
 	private float x_rot;
 	private float y_rot;
 	private float z_rot;
 	private float a_rot;
-	Transform Root;
+
+	// eugenia
+	private float x_trans_eug;
+	private float y_trans_eug;
+	private float z_trans_eug;
+	private float x_rot_eug;
+	private float y_rot_eug;
+	private float z_rot_eug;
+	private float a_rot_eug;
+
+	private string nome;
+	// Transform Root;
+	public GameObject unidos;
+	public GameObject cam;
 	#endregion  	
 	// Use this for initialization 	
 	void Start () {
 		verText = "not yet";
+		nome = "";
 		ConnectToTcpServer();    
-        data_type=1; 
+        data_type=2; 
 	}  	
 	// Update is called once per frame
 	void Update () {         
-		Root = transform;
+		// Root = transform;
 		verificationText.text = verText;
-		Root.localPosition = new Vector3(-(float)x_trans * 0.001f, (float)y_trans * 0.001f, (float)z_trans * 0.001f);
-		Root.localRotation = new Quaternion((float)x_rot, (float)y_rot, (float)z_rot, (float)a_rot);
+		Debug.Log("nome para transform " + nome); 
+		if(nome == "oculos_obj"){
+			cam.transform.localPosition = new Vector3(-(float)y_trans * 0.0001f, (float)z_trans * 0.0001f, (float)x_trans * 0.0001f);
+			cam.transform.localRotation = new Quaternion((float)y_rot, -(float)z_rot, -(float)x_rot, (float)a_rot);
+
+			// cam.transform.localEulerAngles =  new Vector3(x_rot, y_rot, z_rot);
+
+
+
+		}
+		else{
+			unidos.transform.localPosition = new Vector3(-(float)y_trans_eug * 0.0001f, -(float)z_trans_eug* 0.0001f, (float)x_trans_eug * 0.0001f);
+		
+			// unidos.transform.localEulerAngles = new Vector3(x_rot_eug, y_rot_eug, z_rot_eug);
+
+			unidos.transform.localRotation =  new Quaternion((float)y_rot_eug, -(float)z_rot_eug, -(float)x_rot_eug, (float)a_rot_eug);
+		}
+		
 
 		if (Input.GetKeyDown(KeyCode.Space)) {             
 			SendMessage();         
@@ -76,25 +106,41 @@ public class socket_client : MonoBehaviour {
 					// Read incomming stream into byte arrary. 					
 					while ((length = stream.Read(bytes, 0, 2)) != 0) { 	
 						length = Int32.Parse(Encoding.ASCII.GetString(bytes));
-						int lengthData = stream.Read(bytes, 0, length);	
+						int lengthData = stream.Read(bytes, 0, length);
 						var incommingData = new byte[lengthData]; 						
 						Array.Copy(bytes, 0, incommingData, 0, lengthData); 						
 						// Convert byte array to string message. 						
 						verText="foiii";
 						// Debug.Log("server message received as: " + serverMessage); 	
-                        if(data_type==1){
+						if(data_type==2){
+
+                            nome = Encoding.ASCII.GetString(incommingData); 
+							// Debug.Log("nome : " + nome);
+
+                            data_type=1;
+							Array.Clear(bytes, 0, bytes.Length);
+
+                        }
+                        else if(data_type==1){
 
                             string translation = Encoding.ASCII.GetString(incommingData); 
 							translation=translation.Remove(0, 1);
 							translation=translation.Remove((translation.Length-1), 1);
 							string[] pos_trans;
 							pos_trans=translation.Split(',');
-							x_trans = float.Parse(pos_trans[0], CultureInfo.InvariantCulture.NumberFormat);
-							y_trans= float.Parse(pos_trans[1], CultureInfo.InvariantCulture.NumberFormat);
-							z_trans = float.Parse(pos_trans[2], CultureInfo.InvariantCulture.NumberFormat);
-                            Debug.Log("Translation x : " + x_trans);
-                            Debug.Log("Translation y : " + y_trans); 	
-                            Debug.Log("Translation z : " + z_trans); 	
+
+							if(nome == "oculos_obj"){
+								x_trans = float.Parse(pos_trans[0], CultureInfo.InvariantCulture.NumberFormat);
+								y_trans= float.Parse(pos_trans[1], CultureInfo.InvariantCulture.NumberFormat);
+								z_trans = float.Parse(pos_trans[2], CultureInfo.InvariantCulture.NumberFormat);
+							}else{
+								x_trans_eug = float.Parse(pos_trans[0], CultureInfo.InvariantCulture.NumberFormat);
+								y_trans_eug = float.Parse(pos_trans[1], CultureInfo.InvariantCulture.NumberFormat);
+								z_trans_eug = float.Parse(pos_trans[2], CultureInfo.InvariantCulture.NumberFormat);
+							}
+                            // Debug.Log("Translation x : " + x_trans);
+                            // Debug.Log("Translation y : " + y_trans); 	
+                            // Debug.Log("Translation z : " + z_trans); 	
 
                             data_type=0;
 							Array.Clear(bytes, 0, bytes.Length);
@@ -105,17 +151,26 @@ public class socket_client : MonoBehaviour {
 							rotation=rotation.Remove((rotation.Length-1), 1);
 							//  Debug.Log("Rotation x : " + rotation);
 							string[] pos_rot;
+
 							pos_rot=rotation.Split(','); 
-							x_rot = float.Parse(pos_rot[0], CultureInfo.InvariantCulture.NumberFormat);
-							y_rot= float.Parse(pos_rot[1], CultureInfo.InvariantCulture.NumberFormat);
-							z_rot = float.Parse(pos_rot[2], CultureInfo.InvariantCulture.NumberFormat);
-							a_rot = float.Parse(pos_rot[3], CultureInfo.InvariantCulture.NumberFormat);
-                            Debug.Log("Rotation x : " + x_rot);
-                            Debug.Log("Rotation y : " + y_rot); 	
-                            Debug.Log("Rotation z : " + z_rot); 	
- 							Debug.Log("Rotation a : " + a_rot); 	
+							if(nome == "oculos_obj"){
+								x_rot = float.Parse(pos_rot[0], CultureInfo.InvariantCulture.NumberFormat);
+								y_rot= float.Parse(pos_rot[1], CultureInfo.InvariantCulture.NumberFormat);
+								z_rot = float.Parse(pos_rot[2], CultureInfo.InvariantCulture.NumberFormat);
+								a_rot = float.Parse(pos_rot[3], CultureInfo.InvariantCulture.NumberFormat);
+							}else{
+								x_rot_eug = float.Parse(pos_rot[0], CultureInfo.InvariantCulture.NumberFormat);
+								y_rot_eug= float.Parse(pos_rot[1], CultureInfo.InvariantCulture.NumberFormat);
+								z_rot_eug = float.Parse(pos_rot[2], CultureInfo.InvariantCulture.NumberFormat);
+								a_rot_eug = float.Parse(pos_rot[3], CultureInfo.InvariantCulture.NumberFormat);
+							}
+
+                            // Debug.Log("Rotation x : " + x_rot);
+                            // Debug.Log("Rotation y : " + y_rot); 	
+                            // Debug.Log("Rotation z : " + z_rot); 	
+ 							// Debug.Log("Rotation a : " + a_rot); 	
                           	
-                            data_type=1;
+                            data_type=2;
 							Array.Clear(bytes, 0, bytes.Length);
                         }			
 					} 				

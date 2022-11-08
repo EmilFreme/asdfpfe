@@ -50,40 +50,35 @@ try:
                                     print( child, 'has parent', client.GetSegmentParentName( subjectName, segmentName ) )
                                 except ViconDataStream.DataStreamException as e:
                                     print( 'Error getting parent segment', e )
-                            #  print( segmentName, 'has static translation', client.GetSegmentStaticTranslation( subjectName, segmentName ) )
-                            #  print( segmentName, 'has static rotation( helical )', client.GetSegmentStaticRotationHelical( subjectName, segmentName ) )               
-                            #  print( segmentName, 'has static rotation( EulerXYZ )', client.GetSegmentStaticRotationEulerXYZ( subjectName, segmentName ) )              
-                            #  print( segmentName, 'has static rotation( Quaternion )', client.GetSegmentStaticRotationQuaternion( subjectName, segmentName ) )               
-                            #  print( segmentName, 'has static rotation( Matrix )', client.GetSegmentStaticRotationMatrix( subjectName, segmentName ) )
+                    
                             try:
                                 print( segmentName, 'has static scale', client.GetSegmentStaticScale( subjectName, segmentName )) 
                             except ViconDataStream.DataStreamException as e:
-                                print( 'Scale Error', e )               
-                            #  print( segmentName, 'has global translation', client.GetSegmentGlobalTranslation( subjectName, segmentName ) )
-                            #  print( segmentName, 'has global rotation( helical )', client.GetSegmentGlobalRotationHelical( subjectName, segmentName ) )               
-                            #  print( segmentName, 'has global rotation( EulerXYZ )', client.GetSegmentGlobalRotationEulerXYZ( subjectName, segmentName ) )               
-                            #  print( segmentName, 'has global rotation( Quaternion )', client.GetSegmentGlobalRotationQuaternion( subjectName, segmentName ) )               
-                            #  print( segmentName, 'has global rotation( Matrix )', client.GetSegmentGlobalRotationMatrix( subjectName, segmentName ) )
-                            #  print( segmentName, 'has local rotation( helical )', client.GetSegmentLocalRotationHelical( subjectName, segmentName ) )               
-                            #  print( segmentName, 'has local rotation( EulerXYZ )', client.GetSegmentLocalRotationEulerXYZ( subjectName, segmentName ) )               
+                                print( 'Scale Error', e )    
+                                print( segmentName, 'has global translation', client.GetSegmentGlobalTranslation( subjectName, segmentName ) )                       
 
                             subject_t, segment_t = client.GetSegmentLocalTranslation( subjectName, segmentName)
-                            # print( segmentName, 'has local translation',len(str(subject_t).encode() ))
                             len_t=str(len(str(subject_t)))
-                            # print(len_t)
-                            # print(segmentName, "nomee")
-                            if(segmentName == "eugenia"):
-                                clientSoc.send(len_t.encode())
-                                clientSoc.send(str(subject_t).encode())
-                                
-                                subject_r, segment_r = client.GetSegmentLocalRotationQuaternion( subjectName, segmentName )                         
-                                print( segmentName, 'has local rotation( Quaternion )', len(str(subject_r) )) 
-                                len_r=str(len(str(subject_r)))
-                                # print(len_r)
-                                clientSoc.send(len_r.encode())
-                                clientSoc.send(str(subject_r).encode())
+                            len_name = len(str(segmentName))
+                            print("oii")
+                            print(subject_t)
                             
-                            print( segmentName, 'has local translation',str(subject_r), str(segment_r))
+                            clientSoc.send(str(len_name).encode())
+                            clientSoc.send(str(segmentName).encode())
+
+                            clientSoc.send(len_t.encode())
+                            clientSoc.send(str(subject_t).encode())
+                                                    
+                            subject_r, segment_r = client.GetSegmentLocalRotationQuaternion( subjectName, segmentName )     
+                            # subject_r, segment_r = client.GetSegmentLocalRotationEulerXYZ( subjectName, segmentName )                         
+                            # print("aaa",subject_r)
+                            # print( segmentName, 'has local rotation( Quaternion )', len(str(subject_r) )) 
+                            len_r=str(len(str(subject_r)))
+    
+                            clientSoc.send(len_r.encode())
+                            clientSoc.send(str(subject_r).encode())
+                            
+                            # print( segmentName, 'has local translation',str(subject_r), str(segment_r))
                            
 
                 except ViconDataStream.DataStreamException as e:
