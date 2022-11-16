@@ -5,16 +5,16 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/LIBS/MRTK/Services/SceneSystem/SceneSystemResources/DefaultManagerScene.unity
     guid: ae7bb08d297fb69408695d8de0962524
   - enabled: 1
     path: Assets/Main.unity
     guid: f0426de27191aac4689d9f0c691d88d0
-  - enabled: 1
+  - enabled: 0
     path: Assets/LIBS/MRTK/Services/SceneSystem/SceneSystemResources/DefaultLightingScene.unity
     guid: 7e54e36c44f826c438c95da79f8de638
-  - enabled: 1
+  - enabled: 0
     path: Assets/LIBS/MRTK/Services/SceneSystem/SceneSystemResources/DefaultLightingScene.unity
     guid: 7e54e36c44f826c438c95da79f8de638
   m_configObjects:

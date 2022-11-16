@@ -19,6 +19,8 @@ public class socket_client : MonoBehaviour {
     private int data_type;
 	public string verText;
 	public TextMesh verificationText;
+	public GameObject origin;
+	private bool originSet = false;
 	// oculos
 	private float x_trans;
 	private float y_trans;
@@ -27,6 +29,7 @@ public class socket_client : MonoBehaviour {
 	private float y_rot;
 	private float z_rot;
 	private float a_rot;
+	private float teste;
 
 	// eugenia
 	private float x_trans_eug;
@@ -41,6 +44,7 @@ public class socket_client : MonoBehaviour {
 	// Transform Root;
 	public GameObject unidos;
 	public GameObject cam;
+	private bool offset=false;
 	#endregion  	
 	// Use this for initialization 	
 	void Start () {
@@ -55,20 +59,31 @@ public class socket_client : MonoBehaviour {
 		verificationText.text = verText;
 		Debug.Log("nome para transform " + nome); 
 		if(nome == "oculos_obj"){
-			cam.transform.localPosition = new Vector3(-(float)y_trans * 0.0001f, (float)z_trans * 0.0001f, (float)x_trans * 0.0001f);
+			// if(!originSet){
+			// 	origin.transform.localPosition = new Vector3(0,0,0) - new Vector3(-(float)y_trans * 0.001f, (float)z_trans * 0.001f, (float)x_trans * 0.001f);
+			// 	originSet = true;
+			// }
+			cam.transform.localPosition = new Vector3(-(float)y_trans * 0.001f, (float)z_trans * 0.001f, (float)x_trans * 0.001f);
 			cam.transform.localRotation = new Quaternion((float)y_rot, -(float)z_rot, -(float)x_rot, (float)a_rot);
-
-			// cam.transform.localEulerAngles =  new Vector3(x_rot, y_rot, z_rot);
-
-
 
 		}
 		else{
-			unidos.transform.localPosition = new Vector3(-(float)y_trans_eug * 0.0001f, -(float)z_trans_eug* 0.0001f, (float)x_trans_eug * 0.0001f);
-		
-			// unidos.transform.localEulerAngles = new Vector3(x_rot_eug, y_rot_eug, z_rot_eug);
+			if(!offset){
+				print("oculos"+z_trans);
+				print("eug"+z_trans_eug);
+				offset=true;
+				teste = z_trans;
+				unidos.transform.localPosition = new Vector3(-(float)(y_trans_eug) * 0.001f, (float)(z_trans_eug)* 0.001f, (float)(x_trans_eug) * 0.001f);
+				// unidos.transform.localPosition = new Vector3((float)(y_trans_eug - y_trans) * 0.001f, (float)(z_trans_eug - z_trans)* 0.001f, (float)(x_trans_eug-x_trans) * 0.001f);
+
+
+			}else{
+				unidos.transform.localPosition = new Vector3(-(float)(y_trans_eug) * 0.001f, (float)(z_trans_eug  )* 0.001f, (float)(x_trans_eug) * 0.001f);
+			}
 
 			unidos.transform.localRotation =  new Quaternion((float)y_rot_eug, -(float)z_rot_eug, -(float)x_rot_eug, (float)a_rot_eug);
+			// unidos.transform.localRotation = Quaternion.AngleAxis(-180, Vector3.right);
+			
 		}
 		
 

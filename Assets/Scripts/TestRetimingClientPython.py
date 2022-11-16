@@ -62,24 +62,26 @@ try:
                             len_name = len(str(segmentName))
                             print("oii")
                             print(subject_t)
-                            
-                            clientSoc.send(str(len_name).encode())
-                            clientSoc.send(str(segmentName).encode())
+                            try:
+                                clientSoc.send(str(len_name).encode())
+                                clientSoc.send(str(segmentName).encode())
 
-                            clientSoc.send(len_t.encode())
-                            clientSoc.send(str(subject_t).encode())
-                                                    
-                            subject_r, segment_r = client.GetSegmentLocalRotationQuaternion( subjectName, segmentName )     
-                            # subject_r, segment_r = client.GetSegmentLocalRotationEulerXYZ( subjectName, segmentName )                         
-                            # print("aaa",subject_r)
-                            # print( segmentName, 'has local rotation( Quaternion )', len(str(subject_r) )) 
-                            len_r=str(len(str(subject_r)))
-    
-                            clientSoc.send(len_r.encode())
-                            clientSoc.send(str(subject_r).encode())
+                                clientSoc.send(len_t.encode())
+                                clientSoc.send(str(subject_t).encode())
+                                                        
+                                subject_r, segment_r = client.GetSegmentLocalRotationQuaternion( subjectName, segmentName )     
+                                # subject_r, segment_r = client.GetSegmentLocalRotationEulerXYZ( subjectName, segmentName )                         
+                                # print("aaa",subject_r)
+                                # print( segmentName, 'has local rotation( Quaternion )', len(str(subject_r) )) 
+                                len_r=str(len(str(subject_r)))
+        
+                                clientSoc.send(len_r.encode())
+                                clientSoc.send(str(subject_r).encode())
+                                
+                                # print( segmentName, 'has local translation',str(subject_r), str(segment_r))
+                            except:
+                                print("error")
                             
-                            # print( segmentName, 'has local translation',str(subject_r), str(segment_r))
-                           
 
                 except ViconDataStream.DataStreamException as e:
                     print( 'Handled data stream error', e )
