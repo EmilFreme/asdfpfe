@@ -10,6 +10,8 @@ using System.Threading;
 using UnityEngine;
 using System.Globalization;
 using System.Threading.Tasks;
+using UnityEngine.XR;
+using Microsoft.MixedReality.Toolkit;
 
 public class socket_client : MonoBehaviour {  	
 	#region private members 	
@@ -18,9 +20,16 @@ public class socket_client : MonoBehaviour {
 	Task m_Task;
     private int data_type;
 	public string verText;
+	private string piText;
+
 	public TextMesh verificationText;
+	public TextMesh pivotText;
+
 	public GameObject origin;
 	private bool originSet = false;
+
+	Vector3 offset_vec;
+	Vector3 temp_vec;
 	// oculos
 	private float x_trans;
 	private float y_trans;
@@ -30,6 +39,10 @@ public class socket_client : MonoBehaviour {
 	private float z_rot;
 	private float a_rot;
 	private float teste;
+	public CenterBounds script;
+	private float offset_x;
+	private float offset_y;
+	private float offset_z;
 
 	// eugenia
 	private float x_trans_eug;
@@ -44,42 +57,70 @@ public class socket_client : MonoBehaviour {
 	// Transform Root;
 	public GameObject unidos;
 	public GameObject cam;
+	public GameObject Pivot;
+	public Camera camera;
 	private bool offset=false;
 	#endregion  	
 	// Use this for initialization 	
 	void Start () {
+		// XRDevice.DisableAutoXRCameraTracking(camera,true);
+		// var observer = CoreServices.GetSpatialAwarenessSystemDataProvider<IMixedRealitySpatialAwarenessMeshObserver>();
+		// observer.DisplayOption = SpatialAwarenessMeshDisplayOptions.None;
 		verText = "not yet";
+		piText=" pera ai";
 		nome = "";
+		script= GameObject.Find("cranio").GetComponent<CenterBounds>();
+
 		ConnectToTcpServer();    
         data_type=2; 
+
 	}  	
 	// Update is called once per frame
 	void Update () {         
 		// Root = transform;
+		piText= " pos x: " + Pivot.transform.position.x.ToString() + " pos y: " +  Pivot.transform.position.y.ToString()+ " pos z: " + Pivot.transform.position.z.ToString() ;
+		pivotText.text= piText;
 		verificationText.text = verText;
 		Debug.Log("nome para transform " + nome); 
 		if(nome == "oculos_obj"){
+			if(!offset){
+				print("oculos"+z_trans+ ",   " + y_trans + ",   "+ z_trans);
+				print("eug"+z_trans_eug);
+				offset=true;
+				// teste = z_trans;
+				// offset_vec.x = -y_trans * 0.001f;
+				// offset_vec.y =  z_trans * 0.001f;
+				// offset_vec.z =  x_trans * 0.001f;
+				offset_x= x_trans;
+				offset_y=y_trans;
+				offset_z=z_trans;
+				// temp_vec.x = y_trans_eug * 0.001f;
+				// temp_vec.y = z_trans_eug * 0.001f;
+				// temp_vec.z = x_trans_eug * 0.001f;
+				
+				// unidos.transform.localPosition = new Vector3(-(float)(y_trans_eug) * 0.001f, (float)(z_trans_eug)* 0.001f, (float)(x_trans_eug) * 0.001f);
+				// unidos.transform.localPosition = new Vector3(-(float)(y_trans_eug - y_trans) * 0.001f, (float)(z_trans_eug - z_trans)* 0.001f, (float)(x_trans_eug-x_trans) * 0.001f);
+
+
+			}
 			// if(!originSet){
 			// 	origin.transform.localPosition = new Vector3(0,0,0) - new Vector3(-(float)y_trans * 0.001f, (float)z_trans * 0.001f, (float)x_trans * 0.001f);
 			// 	originSet = true;
 			// }
-			cam.transform.localPosition = new Vector3(-(float)y_trans * 0.001f, (float)z_trans * 0.001f, (float)x_trans * 0.001f);
-			cam.transform.localRotation = new Quaternion((float)y_rot, -(float)z_rot, -(float)x_rot, (float)a_rot);
+			camera.transform.localPosition = new Vector3(-(float)y_trans * 0.001f, (float)z_trans * 0.001f, (float)x_trans * 0.001f);
+			camera.transform.localRotation = new Quaternion((float)y_rot, -(float)z_rot, -(float)x_rot, (float)a_rot);
 
 		}
-		else{
-			if(!offset){
-				print("oculos"+z_trans);
-				print("eug"+z_trans_eug);
-				offset=true;
-				teste = z_trans;
-				unidos.transform.localPosition = new Vector3(-(float)(y_trans_eug) * 0.001f, (float)(z_trans_eug)* 0.001f, (float)(x_trans_eug) * 0.001f);
-				// unidos.transform.localPosition = new Vector3((float)(y_trans_eug - y_trans) * 0.001f, (float)(z_trans_eug - z_trans)* 0.001f, (float)(x_trans_eug-x_trans) * 0.001f);
-
-
-			}else{
-				unidos.transform.localPosition = new Vector3(-(float)(y_trans_eug) * 0.001f, (float)(z_trans_eug  )* 0.001f, (float)(x_trans_eug) * 0.001f);
-			}
+		else if (script.ready){
+			
+			unidos.transform.localPosition = new Vector3(-(float)(y_trans_eug ) * 0.001f, (float)((z_trans_eug)* 0.001f ), (float)(x_trans_eug) * 0.001f) ;
+			// offset_vec = new Vector3((-y_trans)-(-y_trans_eug), z_trans-z_trans_eug, x_trans-x_trans_eug );
+			// unidos.transform.localPosition = new Vector3(camera.transform.position.x - (offset_vec.x)* 0.001f, camera.transform.position.y - (offset_vec.y)* 0.001f + 0.12f, camera.transform.position.z - (offset_vec.z)* 0.001f);
+			
+			
+			
+			// camera.transform.position - (offset_vec* 0.001f);
+			print(unidos.transform.localPosition.y);
 
 			unidos.transform.localRotation =  new Quaternion((float)y_rot_eug, -(float)z_rot_eug, -(float)x_rot_eug, (float)a_rot_eug);
 			// unidos.transform.localRotation = Quaternion.AngleAxis(-180, Vector3.right);
@@ -145,17 +186,28 @@ public class socket_client : MonoBehaviour {
 							pos_trans=translation.Split(',');
 
 							if(nome == "oculos_obj"){
-								x_trans = float.Parse(pos_trans[0], CultureInfo.InvariantCulture.NumberFormat);
-								y_trans= float.Parse(pos_trans[1], CultureInfo.InvariantCulture.NumberFormat);
-								z_trans = float.Parse(pos_trans[2], CultureInfo.InvariantCulture.NumberFormat);
+								x_trans = (float)Math.Round(float.Parse(pos_trans[0], CultureInfo.InvariantCulture.NumberFormat));
+								y_trans= (float)Math.Round(float.Parse(pos_trans[1], CultureInfo.InvariantCulture.NumberFormat));
+								z_trans = (float)Math.Round(float.Parse(pos_trans[2], CultureInfo.InvariantCulture.NumberFormat));
 							}else{
-								x_trans_eug = float.Parse(pos_trans[0], CultureInfo.InvariantCulture.NumberFormat);
-								y_trans_eug = float.Parse(pos_trans[1], CultureInfo.InvariantCulture.NumberFormat);
-								z_trans_eug = float.Parse(pos_trans[2], CultureInfo.InvariantCulture.NumberFormat);
+								x_trans_eug = (float)Math.Round(float.Parse(pos_trans[0], CultureInfo.InvariantCulture.NumberFormat));
+								y_trans_eug = (float)Math.Round(float.Parse(pos_trans[1], CultureInfo.InvariantCulture.NumberFormat));
+								z_trans_eug = (float)Math.Round(float.Parse(pos_trans[2], CultureInfo.InvariantCulture.NumberFormat));
+								x_trans_eug-=offset_x - 35.0f;  // quanto menor mais pra direita
+								y_trans_eug-=offset_y + 20.0f; // quanto maior mais pra perto dentro
+								z_trans_eug-=offset_z-175.0f;  // n sei
+
+								// offset_x = x_trans
+
 							}
+							// Vector3 cam_pos = new Vector3(-y_trans, z_trans, x_trans);
+							// Vector3 eug_pos = new Vector3(-y_trans_eug, z_trans_eug, x_trans_eug);
+
+							// offset_vec = new Vector3((-y_trans)-(-y_trans_eug), z_trans-z_trans_eug, x_trans-x_trans_eug );
+
                             // Debug.Log("Translation x : " + x_trans);
                             // Debug.Log("Translation y : " + y_trans); 	
-                            // Debug.Log("Translation z : " + z_trans); 	
+                            Debug.Log("Translation z : " + z_trans_eug); 	
 
                             data_type=0;
 							Array.Clear(bytes, 0, bytes.Length);
